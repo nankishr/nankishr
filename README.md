@@ -21,3 +21,7 @@
 <p align="left">
   Reach me at <a href="mailto:nan@sagoun.com">nan@sagoun.com</a>
 </p>
+
+<p align="center">
+  <img src="assets/hidden.svg#gh-light-mode-only" alt="light mode user, oh how i envy you">
+</p>
