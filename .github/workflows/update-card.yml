@@ -4,11 +4,10 @@ on:
   schedule:
     - cron: "30 18 * * *"
   workflow_dispatch:
-  push:
-    paths:
-      - scripts/generate_card.py
-      - assets/portrait-source.png
-      - assets/fonts/**
+
+concurrency:
+  group: update-card
+  cancel-in-progress: false
 
 permissions:
   contents: write

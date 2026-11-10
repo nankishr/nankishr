@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="44" viewBox="0 0 560 44">
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="28" viewBox="0 0 300 28">
   <defs>
-    <linearGradient id="sweep" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="560" y2="0">
+    <linearGradient id="sweep" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="300" y2="0">
       <stop offset="0.38" stop-color="#1f2328"/>
       <stop offset="0.5" stop-color="#9a6700"/>
       <stop offset="0.62" stop-color="#1f2328"/>
-      <animateTransform attributeName="gradientTransform" type="translate" from="-560 0" to="560 0" dur="4s" repeatCount="indefinite"/>
+      <animateTransform attributeName="gradientTransform" type="translate" from="-300 0" to="300 0" dur="4s" repeatCount="indefinite"/>
     </linearGradient>
   </defs>
   <style>
     .envy { fill: #fc0303; font-weight: 700; animation: pulse 2.4s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
   </style>
-  <text x="280" y="28" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-style="italic" letter-spacing="1" fill="url(#sweep)">light mode user, oh how i <tspan class="envy">envy</tspan> you</text>
+  <text x="150" y="18" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-style="italic" letter-spacing="0.5" fill="url(#sweep)">light mode user, oh how i <tspan class="envy">envy</tspan> you</text>
 </svg>

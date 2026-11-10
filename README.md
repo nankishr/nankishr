@@ -23,5 +23,5 @@
 </p>
 
 <p align="center">
-  <img src="assets/hidden.svg#gh-light-mode-only" alt="light mode user, oh how i envy you">
+  <img src="assets/hidden.svg#gh-light-mode-only" width="340" alt="light mode user, oh how i envy you">
 </p>
