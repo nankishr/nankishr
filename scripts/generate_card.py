@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 HANDLE = "nankishr"
 HOST = "notasynthezoid"
 NAME = "Nandhakishor VS"
-EDUCATION = "Bachelor's in CSE (Ongoing)"
+EDUCATION = "Bachelor's in CSE (ongoing)"
 BIO = "Passionate about optimizing software, reading fiction and listening to electronic music."
 DOB = date(2008, 10, 1)
 QUOTE = "I consume too much water for a human I think…"
