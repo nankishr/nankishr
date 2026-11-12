@@ -1,12 +1,10 @@
 import json
 import math
 import os
-import re
 from calendar import monthrange
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from urllib.parse import parse_qs, urlparse
 from urllib.request import Request, urlopen
 
 from PIL import Image, ImageDraw, ImageFont
@@ -35,6 +33,25 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 MONO = ASSETS / "fonts" / "FragmentMono-Regular.ttf"
 SERIF = ASSETS / "fonts" / "CormorantGaramond-Italic[wght].ttf"
+
+YEARS_QUERY = """
+query($login: String!) {
+  user(login: $login) {
+    contributionsCollection { contributionYears }
+  }
+}
+"""
+
+YEAR_QUERY = """
+query($login: String!, $from: DateTime!, $to: DateTime!) {
+  user(login: $login) {
+    contributionsCollection(from: $from, to: $to) {
+      totalCommitContributions
+      restrictedContributionsCount
+    }
+  }
+}
+"""
 
 
 def font(path, size):
@@ -83,19 +100,41 @@ def gh(url):
         return json.loads(res.read().decode()), res.headers.get("Link", "")
 
 
-def commit_count(repo_url):
-    commits, link = gh(f"{repo_url}/commits?per_page=1")
-    if not commits:
-        return 0
-    for part in link.split(","):
-        m = re.search(r'<([^>]+)>;\s*rel="last"', part)
-        if m:
-            return int(parse_qs(urlparse(m.group(1)).query)["page"][0])
-    return len(commits)
+def gql(query, variables):
+    req = Request(
+        "https://api.github.com/graphql",
+        data=json.dumps({"query": query, "variables": variables}).encode(),
+        headers={
+            "Authorization": f"Bearer {TOKEN}",
+            "Content-Type": "application/json",
+            "User-Agent": "nankishr-profile-card",
+        },
+    )
+    with urlopen(req, timeout=20) as res:
+        payload = json.loads(res.read().decode())
+    if payload.get("errors"):
+        raise RuntimeError(payload["errors"])
+    return payload["data"]
+
+
+def total_commits():
+    data = gql(YEARS_QUERY, {"login": HANDLE})
+    years = data["user"]["contributionsCollection"]["contributionYears"]
+    total = 0
+    for year in years:
+        res = gql(YEAR_QUERY, {
+            "login": HANDLE,
+            "from": f"{year}-01-01T00:00:00Z",
+            "to": f"{year}-12-31T23:59:59Z",
+        })
+        c = res["user"]["contributionsCollection"]
+        total += c["totalCommitContributions"] + c["restrictedContributionsCount"]
+    return total
 
 
 def github_stats():
-    stars = commits = 0
+    stars = 0
+    commits = None
     page = 1
     try:
         while True:
@@ -107,13 +146,16 @@ def github_stats():
                 if repo.get("fork"):
                     continue
                 stars += repo.get("stargazers_count", 0)
-                commits += commit_count(repo["url"])
             if len(repos) < 100:
-                return stars, commits
+                break
             page += 1
     except Exception as e:
-        print(f"GitHub API error: {e}")
-        return stars, None
+        print(f"GitHub API error (stars): {e}")
+    try:
+        commits = total_commits()
+    except Exception as e:
+        print(f"GitHub API error (commits): {e}")
+    return stars, commits
 
 
 def star_icon(d, cx, cy, r):
